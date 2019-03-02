@@ -1,4 +1,5 @@
-# Bud's Ultimate Quality of Life Install Script (for Ubuntu 18.10)
+# Bud's Ultimate Quality of Life Install Script** 
+- **(for Ubuntu 18.10)**
 
 A bash script to install various applications and programs for a better quality of life experience for first time Linux users!
 Eventually I plan on implementing this in probably a PyQT frontend to reduce cold-feet,
