@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #|++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-#|======= Bud's Ultimate Quality of Life Install Script for 	 =========|
-#|======= General Use and Gaming (AMD/AMD+Vega with Kernel 4.20+)=========|
+#|======= Bud's Ultimate Quality of Life Install Script for ==============|
+#|=======        General Use and Gaming =========|
 #|=======			on Ubuntu 18.10 		 =========|
 #|++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
 
@@ -34,13 +34,34 @@ sudo add-apt-repository -y ppa:teejee2008/ppa
 # ******************* based on lsmod output **************************
 #==========================================================================================
 
-driver_result=$(lspci -nnk | grep -iA2 vga)
-	
+amdInstall () 
+{
+    echo "amdgpu Kernel module found! Installing graphics drivers from Padoka PPA..."
+    sudo add-apt-repository -y ppa:paulo-miguel-dias/mesa
+    sudo apt-get update
+    sudo apt-get -y upgrade ;
+}
 
+nvidiaInstall ()
+{
+    echo "nouveau Kernel module found! Installing from graphics-drivers PPA..."
+    sudo apt-add-repository -y ppa:graphics-drivers/ppa
+    sudo apt-get update
+    sudo apt-get -y install nvidia-drivers-415 ;
+}
 
+driverResult=$(lspci -nnk | grep -iA2 vga)
 
-sudo add-apt-repository -y ppa:paulo-miguel-dias/mesa
-sudo apt update
+if [[ "$driverResult" == *"amdgpu"* ]]
+then
+    amdInstall
+elif [[ "$driverResult" == *"nouveau"* ]]
+then
+    nvidiaInstall
+else
+    echo "No compatible Kernel module found! Skipping..."
+fi
+
 
 #=============
 # BalenaEtcher #rewrite to check for latest version instead
@@ -76,35 +97,8 @@ sudo apt install -y --install-recommends winehq-staging
 # | Install applications (from Ubuntu-Cosmic, Bionic, Xenial repositories) |
 #--------------------------------------------------------------------------|
 
-#audacity (free sound editor)
-#audacious (winamp-like audio player for linux)
-#discord
-#dhewm3 (Source port of Doom 3)
-#dolphin (gamecube emulator)
-#filezilla
-#game-data-packager (terminal application to package game-files into installable .deb file for ubuntu)
-#gamehub
-#gnome-tweak-tool (customize gnome desktop)
-#gnome-shell-extensions (extensions to enable through gnome-tweak-tool)
-#gnome-twitch (twitch browser)
-#grub-customizer (customize grub boot menu theme)
-#htop (terminal process monitor)
-#innoextract (attachment for game-data-packager)
-#lutris
-#lgogdownloader (attachment for game-data-packager to download purchased games from gog.com)
-#minetest (free minecraft-clone)
-#multimc (modded minecraft installer and launcher)
-#nautilus-dropbox
-#obs-studio (popular streaming app)
-#steam
-#quake (Only sets up engine, does not include game files)
-#quake2 (Yamagi QuakeII engine, no game files) **Snap Version**
-#quake3 (ioquake3 engine, no game files)
-#ukuu
-#vlc
-#xscreensaver
-
 sudo apt update
+
 sudo apt -y install \
 audacity \
 audacious \
@@ -119,10 +113,7 @@ gnome-twitch \
 grub-customizer \
 filezilla \
 htop \
-libvulkan1 \
-libvulkan1:i386 \
 lutris \
-mesa-vulkan-drivers
 minetest \
 multimc \
 nautilus-dropbox \
@@ -132,7 +123,6 @@ quake \
 quake3 \
 ukuu \
 vlc \
-vulkan-utils \
 xscreensaver \
 xscreensaver-data \
 xscreensaver-data-extra \
